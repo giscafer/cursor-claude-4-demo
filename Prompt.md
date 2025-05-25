@@ -1,4 +1,5 @@
-# LeekHub Stock Desktop
+# cursor-claude-4-demo
+
 
 ## 角色
 你是一位资深产品经理、交互设计师、UI设计师
