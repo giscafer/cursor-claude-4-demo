@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeekHub Stock - 股票详情页</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { 
+            overflow: hidden; 
+            margin: 0; 
+            padding: 0; 
+            background: #f6f6f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .phone-mockup {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 8px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 32px;
+            overflow: hidden;
+            position: relative;
+        }
+        .status-bar {
+            height: 44px;
+            background: transparent;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .content {
+            height: calc(100% - 44px - 83px);
+            background: #f8fafc;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .content::-webkit-scrollbar {
+            display: none;
+        }
+        .detail-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            color: white;
+        }
+        .price-up { color: #ef4444; }
+        .price-down { color: #22c55e; }
+        .chart-container {
+            background: white;
+            margin: 16px;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .chart-placeholder {
+            height: 200px;
+            background: linear-gradient(45deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .chart-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: #ef4444;
+            top: 50%;
+            transform: translateY(-50%) rotate(-5deg);
+        }
+        .chart-line::before {
+            content: '';
+            position: absolute;
+            width: 60%;
+            height: 2px;
+            background: #22c55e;
+            top: -20px;
+            left: 20%;
+            transform: rotate(10deg);
+        }
+        .chart-line::after {
+            content: '';
+            position: absolute;
+            width: 40%;
+            height: 2px;
+            background: #f59e0b;
+            top: 20px;
+            left: 30%;
+            transform: rotate(-8deg);
+        }
+        .time-tabs {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 16px;
+        }
+        .time-tab {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #f1f5f9;
+            color: #64748b;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .time-tab.active {
+            background: #667eea;
+            color: white;
+        }
+        .info-card {
+            background: white;
+            margin: 8px 16px;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .info-item {
+            text-align: center;
+        }
+        .tab-bar {
+            height: 83px;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid #e5e7eb;
+            padding-bottom: 20px;
+        }
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #9ca3af;
+            transition: color 0.3s ease;
+        }
+        .tab-item.active {
+            color: #667eea;
+        }
+        .alert-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 16px;
+            transition: all 0.3s ease;
+        }
+        .alert-btn:hover {
+            background: #5a67d8;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-mockup">
+        <div class="screen">
+            <!-- 状态栏 -->
+            <div class="status-bar">
+                <span>9:41</span>
+                <div class="flex items-center space-x-1">
+                    <i class="fas fa-signal text-sm"></i>
+                    <i class="fas fa-wifi text-sm"></i>
+                    <i class="fas fa-battery-three-quarters text-sm"></i>
+                </div>
+            </div>
+
+            <!-- 内容区域 -->
+            <div class="content">
+                <!-- 详情头部 -->
+                <div class="detail-header">
+                    <div class="flex items-center justify-between mb-4">
+                        <i class="fas fa-arrow-left text-lg"></i>
+                        <div class="flex items-center space-x-3">
+                            <i class="fas fa-star text-lg"></i>
+                            <i class="fas fa-share-alt text-lg"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <h1 class="text-2xl font-bold">贵州茅台</h1>
+                        <p class="text-blue-100 text-sm mb-4">600519 · 上交所</p>
+                        
+                        <div class="mb-4">
+                            <p class="text-4xl font-bold mb-2">¥1,856.00</p>
+                            <div class="flex justify-center items-center space-x-4">
+                                <span class="text-lg">+¥45.60</span>
+                                <span class="bg-red-500 bg-opacity-30 px-3 py-1 rounded-full">+2.52%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white bg-opacity-20 rounded-xl p-4">
+                            <div class="grid grid-cols-3 gap-4 text-center">
+                                <div>
+                                    <p class="text-blue-100 text-sm">今开</p>
+                                    <p class="font-bold">¥1,810.40</p>
+                                </div>
+                                <div>
+                                    <p class="text-blue-100 text-sm">最高</p>
+                                    <p class="font-bold">¥1,865.20</p>
+                                </div>
+                                <div>
+                                    <p class="text-blue-100 text-sm">最低</p>
+                                    <p class="font-bold">¥1,805.60</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- K线图表 -->
+                <div class="chart-container">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-bold text-gray-800">价格走势</h3>
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-expand-arrows-alt text-gray-500"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-placeholder">
+                        <div class="chart-line"></div>
+                        <div class="absolute bottom-4 left-4 text-sm text-gray-600">
+                            <i class="fas fa-chart-line mr-2"></i>实时K线图
+                        </div>
+                    </div>
+                    
+                    <div class="time-tabs">
+                        <span class="time-tab">分时</span>
+                        <span class="time-tab active">日K</span>
+                        <span class="time-tab">周K</span>
+                        <span class="time-tab">月K</span>
+                    </div>
+                </div>
+
+                <!-- 技术指标 -->
+                <div class="info-card">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">技术指标</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">MA5</span>
+                            <span class="font-bold price-up">¥1,842.50</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">MA10</span>
+                            <span class="font-bold price-up">¥1,835.20</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">MA20</span>
+                            <span class="font-bold price-down">¥1,825.80</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">MACD</span>
+                            <span class="font-bold price-up">+12.45</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-600">RSI</span>
+                            <span class="font-bold text-gray-800">68.5</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 基本信息 -->
+                <div class="info-card">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">基本信息</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <p class="text-gray-600 text-sm">总市值</p>
+                            <p class="font-bold text-lg">2.33万亿</p>
+                        </div>
+                        <div class="info-item">
+                            <p class="text-gray-600 text-sm">流通市值</p>
+                            <p class="font-bold text-lg">2.33万亿</p>
+                        </div>
+                        <div class="info-item">
+                            <p class="text-gray-600 text-sm">市盈率</p>
+                            <p class="font-bold text-lg">32.5</p>
+                        </div>
+                        <div class="info-item">
+                            <p class="text-gray-600 text-sm">市净率</p>
+                            <p class="font-bold text-lg">8.9</p>
+                        </div>
+                        <div class="info-item">
+                            <p class="text-gray-600 text-sm">成交量</p>
+                            <p class="font-bold text-lg">1.2万手</p>
+                        </div>
+                        <div class="info-item">
+                            <p class="text-gray-600 text-sm">成交额</p>
+                            <p class="font-bold text-lg">2.2亿</p>
+                        </div>
+                    </div>
+                    
+                    <button class="alert-btn">
+                        <i class="fas fa-bell mr-2"></i>设置价格提醒
+                    </button>
+                </div>
+            </div>
+
+            <!-- 底部导航栏 -->
+            <div class="tab-bar">
+                <div class="tab-item">
+                    <i class="fas fa-chart-line text-xl mb-1"></i>
+                    <span class="text-xs">自选</span>
+                </div>
+                <div class="tab-item">
+                    <i class="fas fa-search text-xl mb-1"></i>
+                    <span class="text-xs">搜索</span>
+                </div>
+                <div class="tab-item">
+                    <i class="fas fa-bell text-xl mb-1"></i>
+                    <span class="text-xs">提醒</span>
+                </div>
+                <div class="tab-item">
+                    <i class="fas fa-cog text-xl mb-1"></i>
+                    <span class="text-xs">设置</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

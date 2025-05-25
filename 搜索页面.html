@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeekHub Stock - 搜索页面</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { 
+            overflow: hidden; 
+            margin: 0; 
+            padding: 0; 
+            background: #f6f6f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .phone-mockup {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 8px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 32px;
+            overflow: hidden;
+            position: relative;
+        }
+        .status-bar {
+            height: 44px;
+            background: transparent;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .content {
+            height: calc(100% - 44px - 83px);
+            background: #f8fafc;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .content::-webkit-scrollbar {
+            display: none;
+        }
+        .search-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            color: white;
+        }
+        .search-box {
+            background: white;
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            margin-top: 16px;
+        }
+        .search-box input {
+            flex: 1;
+            border: none;
+            outline: none;
+            margin-left: 12px;
+            font-size: 16px;
+        }
+        .hot-stocks {
+            padding: 20px;
+        }
+        .stock-tag {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin: 4px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .stock-tag:hover {
+            background: #5a67d8;
+            transform: translateY(-1px);
+        }
+        .search-result {
+            background: white;
+            margin: 8px 16px;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .price-up { color: #ef4444; }
+        .price-down { color: #22c55e; }
+        .tab-bar {
+            height: 83px;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid #e5e7eb;
+            padding-bottom: 20px;
+        }
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #9ca3af;
+            transition: color 0.3s ease;
+        }
+        .tab-item.active {
+            color: #667eea;
+        }
+        .add-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .add-btn:hover {
+            background: #5a67d8;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-mockup">
+        <div class="screen">
+            <!-- 状态栏 -->
+            <div class="status-bar">
+                <span>9:41</span>
+                <div class="flex items-center space-x-1">
+                    <i class="fas fa-signal text-sm"></i>
+                    <i class="fas fa-wifi text-sm"></i>
+                    <i class="fas fa-battery-three-quarters text-sm"></i>
+                </div>
+            </div>
+
+            <!-- 内容区域 -->
+            <div class="content">
+                <!-- 搜索头部 -->
+                <div class="search-header">
+                    <div class="flex items-center justify-between">
+                        <h1 class="text-2xl font-bold">股票搜索</h1>
+                        <i class="fas fa-times text-lg"></i>
+                    </div>
+                    
+                    <div class="search-box">
+                        <i class="fas fa-search text-gray-400"></i>
+                        <input type="text" placeholder="输入股票代码或名称" value="茅台">
+                    </div>
+                </div>
+
+                <!-- 热门股票 -->
+                <div class="hot-stocks">
+                    <h3 class="text-lg font-bold text-gray-800 mb-3">热门股票</h3>
+                    <div class="flex flex-wrap">
+                        <span class="stock-tag">贵州茅台</span>
+                        <span class="stock-tag">腾讯控股</span>
+                        <span class="stock-tag">苹果公司</span>
+                        <span class="stock-tag">比亚迪</span>
+                        <span class="stock-tag">宁德时代</span>
+                        <span class="stock-tag">阿里巴巴</span>
+                        <span class="stock-tag">美团</span>
+                        <span class="stock-tag">小米集团</span>
+                    </div>
+                </div>
+
+                <!-- 搜索结果 -->
+                <div class="px-4">
+                    <h3 class="text-lg font-bold text-gray-800 mb-3">搜索结果</h3>
+                    
+                    <div class="search-result">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-2">
+                                <h3 class="font-bold text-gray-800">贵州茅台</h3>
+                                <span class="text-gray-500 text-sm">600519</span>
+                            </div>
+                            <p class="text-gray-600 text-sm mt-1">白酒制造业 · 上交所</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-lg font-bold price-up">¥1,856.00</p>
+                            <button class="add-btn mt-2">
+                                <i class="fas fa-plus mr-1"></i>添加
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="search-result">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-2">
+                                <h3 class="font-bold text-gray-800">茅台集团</h3>
+                                <span class="text-gray-500 text-sm">600519.SH</span>
+                            </div>
+                            <p class="text-gray-600 text-sm mt-1">白酒制造业 · 上交所</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-lg font-bold price-up">¥1,856.00</p>
+                            <button class="add-btn mt-2">
+                                <i class="fas fa-plus mr-1"></i>添加
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="search-result">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-2">
+                                <h3 class="font-bold text-gray-800">金种子酒</h3>
+                                <span class="text-gray-500 text-sm">600199</span>
+                            </div>
+                            <p class="text-gray-600 text-sm mt-1">白酒制造业 · 上交所</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-lg font-bold price-down">¥18.45</p>
+                            <button class="add-btn mt-2">
+                                <i class="fas fa-plus mr-1"></i>添加
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 搜索历史 -->
+                <div class="px-4 mt-6">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-lg font-bold text-gray-800">搜索历史</h3>
+                        <button class="text-gray-500 text-sm">
+                            <i class="fas fa-trash mr-1"></i>清空
+                        </button>
+                    </div>
+                    
+                    <div class="flex flex-wrap">
+                        <span class="bg-gray-100 text-gray-700 px-3 py-2 rounded-lg m-1 text-sm">腾讯控股</span>
+                        <span class="bg-gray-100 text-gray-700 px-3 py-2 rounded-lg m-1 text-sm">苹果公司</span>
+                        <span class="bg-gray-100 text-gray-700 px-3 py-2 rounded-lg m-1 text-sm">比亚迪</span>
+                        <span class="bg-gray-100 text-gray-700 px-3 py-2 rounded-lg m-1 text-sm">宁德时代</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部导航栏 -->
+            <div class="tab-bar">
+                <div class="tab-item">
+                    <i class="fas fa-chart-line text-xl mb-1"></i>
+                    <span class="text-xs">自选</span>
+                </div>
+                <div class="tab-item active">
+                    <i class="fas fa-search text-xl mb-1"></i>
+                    <span class="text-xs">搜索</span>
+                </div>
+                <div class="tab-item">
+                    <i class="fas fa-bell text-xl mb-1"></i>
+                    <span class="text-xs">提醒</span>
+                </div>
+                <div class="tab-item">
+                    <i class="fas fa-cog text-xl mb-1"></i>
+                    <span class="text-xs">设置</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

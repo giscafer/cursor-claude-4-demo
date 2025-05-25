@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeekHub Stock APP - UI设计展示</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #f6f6f6;
+        }
+        
+        .ui-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+            justify-items: center;
+        }
+        
+        .ui-iframe {
+            width: 400px;
+            height: 850px;
+            border: none;
+            background-color: #f6f6f6;
+        }
+    </style>
+</head>
+<body>
+    <div class="ui-grid">
+        <iframe src="主页面.html" class="ui-iframe"></iframe>
+        <iframe src="搜索页面.html" class="ui-iframe"></iframe>
+        <iframe src="股票详情页.html" class="ui-iframe"></iframe>
+        <iframe src="设置页面.html" class="ui-iframe"></iframe>
+        <iframe src="悬浮窗页面.html" class="ui-iframe"></iframe>
+    </div>
+</body>
+</html> 

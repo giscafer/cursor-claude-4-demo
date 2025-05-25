@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeekHub Stock - 设置页面</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { 
+            overflow: hidden; 
+            margin: 0; 
+            padding: 0; 
+            background: #f6f6f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .phone-mockup {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 8px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 32px;
+            overflow: hidden;
+            position: relative;
+        }
+        .status-bar {
+            height: 44px;
+            background: transparent;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .content {
+            height: calc(100% - 44px - 83px);
+            background: #f8fafc;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .content::-webkit-scrollbar {
+            display: none;
+        }
+        .settings-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            color: white;
+        }
+        .settings-section {
+            background: white;
+            margin: 16px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            padding: 16px 20px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e5e7eb;
+            font-weight: 600;
+            color: #374151;
+        }
+        .setting-item {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+        .setting-item:hover {
+            background: #f8fafc;
+        }
+        .setting-label {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+        .setting-icon {
+            width: 24px;
+            margin-right: 12px;
+            color: #667eea;
+        }
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 28px;
+            background: #e5e7eb;
+            border-radius: 14px;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
+        .toggle-switch.active {
+            background: #667eea;
+        }
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .toggle-switch.active::after {
+            transform: translateX(22px);
+        }
+        .setting-value {
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .tab-bar {
+            height: 83px;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid #e5e7eb;
+            padding-bottom: 20px;
+        }
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #9ca3af;
+            transition: color 0.3s ease;
+        }
+        .tab-item.active {
+            color: #667eea;
+        }
+        .user-profile {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: white;
+            margin: 16px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            margin-right: 16px;
+        }
+        .user-info h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+        .user-info p {
+            color: #6b7280;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-mockup">
+        <div class="screen">
+            <!-- 状态栏 -->
+            <div class="status-bar">
+                <span>9:41</span>
+                <div class="flex items-center space-x-1">
+                    <i class="fas fa-signal text-sm"></i>
+                    <i class="fas fa-wifi text-sm"></i>
+                    <i class="fas fa-battery-three-quarters text-sm"></i>
+                </div>
+            </div>
+
+            <!-- 内容区域 -->
+            <div class="content">
+                <!-- 设置头部 -->
+                <div class="settings-header">
+                    <div class="flex items-center justify-between">
+                        <h1 class="text-2xl font-bold">设置</h1>
+                        <i class="fas fa-user-circle text-2xl"></i>
+                    </div>
+                    <p class="text-blue-100 text-sm mt-2">个性化配置您的股票监控体验</p>
+                </div>
+
+                <!-- 用户信息 -->
+                <div class="user-profile">
+                    <div class="avatar">L</div>
+                    <div class="user-info flex-1">
+                        <h3>LeekHub用户</h3>
+                        <p>免费版用户 · 已使用3天</p>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-400"></i>
+                </div>
+
+                <!-- 显示设置 -->
+                <div class="settings-section">
+                    <div class="section-title">显示设置</div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <i class="fas fa-palette setting-icon"></i>
+                            <span>深色模式</span>
+                        </div>
+                        <div class="toggle-switch"></div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <i class="fas fa-sync-alt setting-icon"></i>
+                            <span>刷新频率</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="setting-value">3秒</span>
+                            <i class="fas fa-chevron-right text-gray-400 ml-2"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <i class="fas fa-eye setting-icon"></i>
+                            <span>悬浮窗透明度</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="setting-value">80%</span>
+                            <i class="fas fa-chevron-right text-gray-400 ml-2"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 提醒设置 -->
+                <div class="settings-section">
+                    <div class="section-title">提醒设置</div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <i class="fas fa-bell setting-icon"></i>
+                            <span>价格提醒</span>
+                        </div>
+                        <div class="toggle-switch active"></div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <i class="fas fa-volume-up setting-icon"></i>
+                            <span>提醒声音</span>
+                        </div>
+                        <div class="toggle-switch active"></div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <i class="fas fa-clock setting-icon"></i>
+                            <span>开盘收盘提醒</span>
+                        </div>
+                        <div class="toggle-switch active"></div>
+                    </div>
+                </div>
+
+                <!-- 数据设置 -->
+                <div class="settings-section">
+                    <div class="section-title">数据设置</div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <i class="fas fa-database setting-icon"></i>
+                            <span>数据源</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="setting-value">新浪财经</span>
+                            <i class="fas fa-chevron-right text-gray-400 ml-2"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <i class="fas fa-wifi setting-icon"></i>
+                            <span>仅WiFi更新</span>
+                        </div>
+                        <div class="toggle-switch"></div>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <i class="fas fa-download setting-icon"></i>
+                            <span>缓存大小</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="setting-value">25.6MB</span>
+                            <i class="fas fa-chevron-right text-gray-400 ml-2"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 其他设置 -->
+                <div class="settings-section">
+                    <div class="section-title">其他</div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <i class="fas fa-keyboard setting-icon"></i>
+                            <span>快捷键设置</span>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <i class="fas fa-star setting-icon"></i>
+                            <span>升级到高级版</span>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-label">
+                            <i class="fas fa-info-circle setting-icon"></i>
+                            <span>关于LeekHub</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="setting-value">v1.0.0</span>
+                            <i class="fas fa-chevron-right text-gray-400 ml-2"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部导航栏 -->
+            <div class="tab-bar">
+                <div class="tab-item">
+                    <i class="fas fa-chart-line text-xl mb-1"></i>
+                    <span class="text-xs">自选</span>
+                </div>
+                <div class="tab-item">
+                    <i class="fas fa-search text-xl mb-1"></i>
+                    <span class="text-xs">搜索</span>
+                </div>
+                <div class="tab-item">
+                    <i class="fas fa-bell text-xl mb-1"></i>
+                    <span class="text-xs">提醒</span>
+                </div>
+                <div class="tab-item active">
+                    <i class="fas fa-cog text-xl mb-1"></i>
+                    <span class="text-xs">设置</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

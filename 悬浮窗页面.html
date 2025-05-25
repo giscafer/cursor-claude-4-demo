@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeekHub Stock - 悬浮窗页面</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { 
+            overflow: hidden; 
+            margin: 0; 
+            padding: 0; 
+            background: #f6f6f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .phone-mockup {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 8px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 32px;
+            overflow: hidden;
+            position: relative;
+        }
+        .status-bar {
+            height: 44px;
+            background: transparent;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .content {
+            height: calc(100% - 44px - 83px);
+            background: #f8fafc;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            position: relative;
+        }
+        .content::-webkit-scrollbar {
+            display: none;
+        }
+        .float-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            color: white;
+            text-align: center;
+        }
+        .float-widget {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+            min-width: 280px;
+        }
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        .widget-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #374151;
+            flex: 1;
+        }
+        .widget-controls {
+            display: flex;
+            gap: 8px;
+        }
+        .control-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+        .minimize-btn {
+            background: #fbbf24;
+            color: white;
+        }
+        .close-btn {
+            background: #ef4444;
+            color: white;
+        }
+        .expand-btn {
+            background: #22c55e;
+            color: white;
+        }
+        .stock-mini {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        .stock-mini:last-child {
+            border-bottom: none;
+        }
+        .stock-info {
+            flex: 1;
+        }
+        .stock-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 2px;
+        }
+        .stock-code {
+            font-size: 12px;
+            color: #6b7280;
+        }
+        .stock-price {
+            text-align: right;
+        }
+        .current-price {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+        .price-change {
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .price-up { color: #ef4444; }
+        .price-down { color: #22c55e; }
+        .price-neutral { color: #6b7280; }
+        .tab-bar {
+            height: 83px;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid #e5e7eb;
+            padding-bottom: 20px;
+        }
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #9ca3af;
+            transition: color 0.3s ease;
+        }
+        .tab-item.active {
+            color: #667eea;
+        }
+        .demo-text {
+            text-align: center;
+            color: #6b7280;
+            margin: 40px 20px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .demo-arrow {
+            position: absolute;
+            top: 200px;
+            right: 40px;
+            color: #667eea;
+            font-size: 24px;
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            }
+            50% {
+                box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+            }
+            100% {
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-mockup">
+        <div class="screen">
+            <!-- 状态栏 -->
+            <div class="status-bar">
+                <span>9:41</span>
+                <div class="flex items-center space-x-1">
+                    <i class="fas fa-signal text-sm"></i>
+                    <i class="fas fa-wifi text-sm"></i>
+                    <i class="fas fa-battery-three-quarters text-sm"></i>
+                </div>
+            </div>
+
+            <!-- 内容区域 -->
+            <div class="content">
+                <!-- 悬浮窗头部 -->
+                <div class="float-header">
+                    <h1 class="text-2xl font-bold mb-2">悬浮窗模式</h1>
+                    <p class="text-blue-100 text-sm">最小化时的股票监控界面</p>
+                </div>
+
+                <!-- 演示说明 -->
+                <div class="demo-text">
+                    <p><strong>悬浮窗功能演示</strong></p>
+                    <p>当应用最小化时，会显示如右侧的悬浮窗口</p>
+                    <p>• 实时显示关键股票信息</p>
+                    <p>• 鼠标悬浮查看详细数据</p>
+                    <p>• 点击可快速展开主应用</p>
+                    <p>• 支持拖拽移动位置</p>
+                </div>
+
+                <!-- 悬浮窗演示 -->
+                <div class="float-widget pulse">
+                    <div class="widget-header">
+                        <div class="widget-title">LeekHub Stock</div>
+                        <div class="widget-controls">
+                            <button class="control-btn minimize-btn">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <button class="control-btn expand-btn">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                            <button class="control-btn close-btn">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="stock-mini">
+                        <div class="stock-info">
+                            <div class="stock-name">贵州茅台</div>
+                            <div class="stock-code">600519</div>
+                        </div>
+                        <div class="stock-price">
+                            <div class="current-price price-up">¥1,856</div>
+                            <div class="price-change price-up">+2.52%</div>
+                        </div>
+                    </div>
+
+                    <div class="stock-mini">
+                        <div class="stock-info">
+                            <div class="stock-name">腾讯控股</div>
+                            <div class="stock-code">00700</div>
+                        </div>
+                        <div class="stock-price">
+                            <div class="current-price price-down">HK$343</div>
+                            <div class="price-change price-down">-2.34%</div>
+                        </div>
+                    </div>
+
+                    <div class="stock-mini">
+                        <div class="stock-info">
+                            <div class="stock-name">苹果公司</div>
+                            <div class="stock-code">AAPL</div>
+                        </div>
+                        <div class="stock-price">
+                            <div class="current-price price-up">$178</div>
+                            <div class="price-change price-up">+1.80%</div>
+                        </div>
+                    </div>
+
+                    <div class="stock-mini">
+                        <div class="stock-info">
+                            <div class="stock-name">比亚迪</div>
+                            <div class="stock-code">002594</div>
+                        </div>
+                        <div class="stock-price">
+                            <div class="current-price price-down">¥246</div>
+                            <div class="price-change price-down">-4.81%</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(0,0,0,0.1); text-align: center;">
+                        <div style="font-size: 12px; color: #6b7280;">
+                            <i class="fas fa-sync-alt" style="margin-right: 4px;"></i>
+                            实时更新 · 点击展开
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 指示箭头 -->
+                <div class="demo-arrow">
+                    <i class="fas fa-arrow-up"></i>
+                </div>
+            </div>
+
+            <!-- 底部导航栏 -->
+            <div class="tab-bar">
+                <div class="tab-item">
+                    <i class="fas fa-chart-line text-xl mb-1"></i>
+                    <span class="text-xs">自选</span>
+                </div>
+                <div class="tab-item">
+                    <i class="fas fa-search text-xl mb-1"></i>
+                    <span class="text-xs">搜索</span>
+                </div>
+                <div class="tab-item">
+                    <i class="fas fa-bell text-xl mb-1"></i>
+                    <span class="text-xs">提醒</span>
+                </div>
+                <div class="tab-item">
+                    <i class="fas fa-cog text-xl mb-1"></i>
+                    <span class="text-xs">设置</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
